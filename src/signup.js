@@ -31,6 +31,7 @@ function Login() {
 
   if (data && data.user && data.user[0]) {
     localStorage.setItem('authuser',JSON.stringify(data.user[0]));
+    console.log(data.user[0])
   }
   
 
@@ -40,46 +41,36 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center bg-gray-100 py-8">
-
+    <div>
   
 
-      <div className="-mt-8 w-full max-w-md mx-auto px-6">
-        <div className="w-64 mb-4 text-center mx-auto">
-          logo
-        </div>
+      <div className="max-w-2xl">
         <form
           onSubmit={handleSubmit}
-          className="mt-8 sm:bg-white sm:rounded-lg sm:shadow-md sm:px-8 sm:py-8"
+          className="py-8 text-left shadow bg-white rounded"
         >
-          <h2 className="font-semibold text-2xl mb-4">Sign In</h2>
-          <div className="mb-4">
-          <label htmlFor="email" className="block text-gray-900 leading-tight">
-            Email</label>
-          <input
-              className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none focus:border-green-400"
-              id="email"
+          <label className="block w-full">
+            Email
+            <input
+              className="block rounded text-gray-900 p-3 w-full border-2"
               type="text"
               name="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
             />
-
-          </div>
-          <div className="mb-4">
-          <label htmlFor="password" className="block text-gray-900 leading-tight">
-            Password </label>
-          <input
-              className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none focus:border-green-400"
-              type="password"
-              id="password"
+          </label>
+          <label className="block w-full">
+            Password
+            <input
+              className="block rounded text-gray-900 p-3 w-full border-2"
+              type="text"
               name="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
             />
-          </div>
+          </label>
 
-          <button type="submit" className="block w-full px-4 py-3 leading-tight rounded-lg bg-green-500 hover:bg-green-700 text-white font-semibold focus:outline-none">Submit</button>
+          <button type="submit">Submit</button>
         </form>
       </div>
     </div>
