@@ -22,16 +22,20 @@ query User($email: String!,$password: String!)  {
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [invalidLogin, setInvalidLogin] = useState(false);
+
+  const [getUser, { loading, data }] = useLazyQuery(GET_USER, {
+    onCompleted: () => (data.user.length < 1 ? setInvalidLogin(true): null)
+  });
 
 
-  const [user, setUser] = useState(null);
-  const [getUser, { loading, data }] = useLazyQuery(GET_USER);
-
-  if (loading) return <p>Loading ...</p>;
 
   if (data && data.user && data.user[0]) {
+    setInvalidLogin(false)
     localStorage.setItem('authuser',JSON.stringify(data.user[0]));
+    window.location.reload(false);
   }
+  
   
 
   const handleSubmit = e => {
@@ -53,6 +57,7 @@ function Login() {
           className="mt-8 sm:bg-white sm:rounded-lg sm:shadow-md sm:px-8 sm:py-8"
         >
           <h2 className="font-semibold text-2xl mb-4">Sign In</h2>
+          {invalidLogin ? "wrong username or password": null}
           <div className="mb-4">
           <label htmlFor="email" className="block text-gray-900 leading-tight">
             Email</label>
@@ -79,7 +84,7 @@ function Login() {
             />
           </div>
 
-          <button type="submit" className="block w-full px-4 py-3 leading-tight rounded-lg bg-green-500 hover:bg-green-700 text-white font-semibold focus:outline-none">Submit</button>
+          <button type="submit" className="block w-full px-4 py-3 leading-tight rounded-lg bg-green-500 hover:bg-green-700 text-white font-semibold focus:outline-none">{loading ? 'Signing you in': "Sign in"}</button>
         </form>
       </div>
     </div>
