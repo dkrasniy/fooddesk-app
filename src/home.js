@@ -12,6 +12,7 @@ function Home({auth}) {
         <img src={logo} className="w-64 mx-auto" alt="logo" />
         <p className="text-white text-semibold text-lg">
       {auth.name}
+      <button type="button" onClick={()=>localStorage.removeItem('authuser')}>Log Out</button>
         </p>
         <Link className="text-gray-500 block" to="/about">by Louis &amp; David <ChevronRight width={18} className="inline"/></Link>
         </div>
