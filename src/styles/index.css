@@ -3,3 +3,5 @@
 @tailwind components;
 
 @tailwind utilities;
+
+.cls-1,.cls-2{fill:#30b34e;}.cls-2{opacity:0.4;isolation:isolate;}

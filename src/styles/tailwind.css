@@ -13259,6 +13259,15 @@ video {
           transition-duration: 1000ms;
 }
 
+.cls-1,.cls-2{
+  fill:#30b34e;
+}
+
+.cls-2{
+  opacity:0.4;
+  isolation:isolate;
+}
+
 @media (min-width: 640px) {
   .sm\:sr-only {
     position: absolute;
