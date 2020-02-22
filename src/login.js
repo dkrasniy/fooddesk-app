@@ -1,21 +1,77 @@
-import React from 'react';
-import logo from './logo.svg';
-import { ChevronRight } from 'react-feather';
+import React, { useState } from "react";
+import logo from "./logo.svg";
+import { ChevronRight } from "react-feather";
 import { Link, Router } from "@reach/router";
 
+import gql from 'graphql-tag';
+import { useQuery } from '@apollo/react-hooks';
+import { useLazyQuery } from '@apollo/react-hooks';
 
-function Home() {
+
+const GET_USER = gql`
+query User($email: String!,$password: String!)  { 
+  user(where: {email: {_eq: $email}, password: {_eq: $password}}) {
+    id
+  }
+}
+`;
+
+
+function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+
+  const [user, setUser] = useState(null);
+  const [getUser, { loading, data }] = useLazyQuery(GET_USER);
+
+  if (loading) return <p>Loading ...</p>;
+
+  if (data && data.user) {
+    console.log(data.user[0])
+  }
+  
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    getUser({ variables: { email: email, password: password } })    
+  };
+
   return (
-    <div className="App bg-gray-800 text-center min-h-screen items-center flex justify-around">
-      <div>
-        <img src={logo} className="w-64 mx-auto" alt="logo" />
-        <p className="text-white text-semibold text-lg">
-          React, Tailwind, React Router starter
-        </p>
-        <Link className="text-gray-500 block" to="/about">by Louis &amp; David <ChevronRight width={18} className="inline"/></Link>
-        </div>
+    <div>
+  
+
+      <div className="max-w-2xl">
+        <form
+          onSubmit={handleSubmit}
+          className="py-8 text-left shadow bg-white rounded"
+        >
+          <label className="block w-full">
+            Email
+            <input
+              className="block rounded text-gray-900 p-3 w-full border-2"
+              type="text"
+              name="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+            />
+          </label>
+          <label className="block w-full">
+            Password
+            <input
+              className="block rounded text-gray-900 p-3 w-full border-2"
+              type="text"
+              name="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+            />
+          </label>
+
+          <button type="submit">Submit</button>
+        </form>
+      </div>
     </div>
   );
 }
 
-export default Home;
+export default Login;
