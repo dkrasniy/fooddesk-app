@@ -1,17 +1,18 @@
 import React, { useState } from "react";
 import ReactMapGL, { Marker } from "react-map-gl";
 import data_json from "../markers.json";
+import { IoMdPin } from "react-icons/io";
 
 const MAP_TOKEN =
   "pk.eyJ1IjoibG91aXNwaGFtMjMiLCJhIjoiY2p1dzBldGRtMDdjcjN5bGFqOTNpcXVneCJ9.w6egnce6WFupf_Bww5hVJg";
 
 function Map() {
   const [viewPort, setDefaultPort] = useState({
-    width: "100vw",
-    height: "100vh",
+    width: "60vw",
+    height: "60vh",
     latitude: 37.7577,
     longitude: -122.4376,
-    zoom: 8
+    zoom: 5
   });
 
   return (
@@ -19,20 +20,22 @@ function Map() {
       <ReactMapGL
         {...viewPort}
         mapboxApiAccessToken={MAP_TOKEN}
-        mapStyle="mapbox://styles/louispham23/ck6y79fvx33fj1jp8a3h67zxe"
+        mapStyle="mapbox://styles/mapbox/streets-v11"
         onViewportChange={viewPort => {
           setDefaultPort(viewPort);
         }}
       >
         {data_json.features.map(location => (
           <Marker
-            key={location.properties.dbh}
+            key={location.properties.location}
             latitude={location.geometry.coordinates[1]}
             longitude={location.geometry.coordinates[0]}
           >
-            <h1 className="text-white text-4xl">MARKER</h1>
             <div>
-              <button></button>
+              <h1 className="text-2xl text-blue-500">
+                {location.properties.location}
+              </h1>
+              <IoMdPin className="fill-current text-blue-500" />
             </div>
           </Marker>
         ))}
