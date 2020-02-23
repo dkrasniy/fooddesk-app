@@ -2,15 +2,20 @@ import React, { useState, useEffect } from "react";
 import { useQuery } from "@apollo/react-hooks";
 import {
   GET_RESTAURANT_DETAILS_FOR_USER,
-  CREATE_EVENT
+  CREATE_EVENT,
+  UPDATE_EVENT
 } from "./queries/restaurant";
 import Layout from "./components/layout";
 import { IoMdRestaurant, IoIosCar } from "react-icons/io";
 import { useMutation } from "@apollo/react-hooks";
+import { Users, Frown, MessageCircle, Clock, Check, Lock } from "react-feather";
 
 function Home({ auth }) {
   const [myRestaurantData, setMyRestaurantData] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [feedCount, setFeedCount] = useState("");
+
+  let claimedItems = [];
 
   const [comments, setComments] = useState("");
 
@@ -28,6 +33,15 @@ function Home({ auth }) {
     variables: { userId: auth.id }
   });
 
+  const [updateEventClaimer, { loadingUpdateClaimer }] = useMutation(
+    UPDATE_EVENT,
+    {
+      onCompleted: data => {
+        window.location.reload(false);
+      }
+    }
+  );
+
   if (error) return `Error! ${error.message}`;
 
   const handleSubmit = e => {
@@ -35,10 +49,16 @@ function Home({ auth }) {
     createEvent({
       variables: {
         comments: comments,
+        feedCount: feedCount,
         restaurant_id: data.user[0].restaurant.id,
         user_id: auth.id
       }
     });
+  };
+
+  const claimEvent = (event, userid) => {
+    claimedItems.push(event);
+    updateEventClaimer({ variables: { eventId: event, claimerId: userid } });
   };
 
   const Event = ({
@@ -46,19 +66,44 @@ function Home({ auth }) {
     date,
     comments,
     restaurantName = null,
-    restaurantAddress = null
+    restaurantAddress = null,
+    feedCount = null,
+    claimer
   }) => (
     <div className="bg-white p-4 rounded-lg  my-2 text-left w-full flex">
-      <span className="text-4xl font-semibold text-gray-300 block">{id}</span>
 
-      <div className="pl-4">
-        <span className="text-lg font-semibold">{comments}</span>{" "}
-        <span className="text-gray-600 block">
-          {date.toLocaleTimeString("en-US")}
-        </span>
-        {restaurantName ? restaurantName : null}
-        {restaurantAddress ? restaurantAddress : null}
-      </div>
+
+
+<span className="text-4xl font-semibold text-gray-300 block">{id}</span>
+
+<div className="pl-4 w-full flex flex-wrap">
+  <div className="w-full md:w-2/3">
+    <div className=" py-2 flex items-center text-gray-800">
+      <Clock size={20} className="text-gray-600 pr-1" />
+      {date.toLocaleTimeString("en-US")}
+    </div>
+
+    <span className="text-lg font-semibold">{comments}</span>
+    <span className="text-gray-600 block flex items-center">
+    <Users size={20} className="text-gray-600 pr-1" />
+          {feedCount ? feedCount : "Not specified"}
+    </span>
+
+  </div>
+
+  <div className="w-full md:w-1/3 items-center flex justify-center">
+    {claimer && claimer.id ?  (
+        <div className="text-red-600 items-center flex"><div className="bg-red-600 rounded-full text-white p-2 h-8 w-8 flex items-center justify-center"><Lock/></div><span className="font-semibold ml-2">Claimed</span></div>
+      )
+    : (
+      <div className="text-green-600 items-center flex"><div className="bg-green-500 rounded-full text-white p-2 h-8 w-8 flex items-center justify-center"><Check/></div><span className="font-semibold ml-2">Available</span></div>
+    )}
+  </div>
+</div>
+
+
+
+
     </div>
   );
 
@@ -67,20 +112,68 @@ function Home({ auth }) {
     date,
     comments,
     restaurantName = null,
-    restaurantAddress = null
+    restaurantAddress = null,
+    feedCount = null,
+    claimer
   }) => (
-    <div className="bg-white p-4 rounded-lg  my-2 text-left w-full flex">
+    <div
+      className={`bg-white p-4 rounded-lg  my-2 text-left w-full flex border-l-2 ${
+        claimer && claimer.id ? "border-red-500" : "border-green-600"
+      }`}
+    >
       <span className="text-4xl font-semibold text-gray-300 block">{id}</span>
 
-      <div className="pl-4">
-        <span className="text-lg font-semibold">{restaurantName}</span>
-        <span className="text-gray-600 block">
-          {restaurantAddress ? restaurantAddress : null}
-        </span>
-        <span className="text-lg font-semibold">{comments}</span>{" "}
-        <span className="text-gray-600 block">
-          {date.toLocaleTimeString("en-US")}
-        </span>
+      <div className="pl-4 w-full flex flex-wrap">
+        <div className="w-full md:w-2/3">
+          <div className=" py-2 flex items-center text-gray-800">
+            <Clock size={20} className="text-gray-600 pr-1" />
+            {date.toLocaleTimeString("en-US")}
+          </div>
+
+          <span className="text-lg font-semibold">{restaurantName}</span>
+          <span className="text-gray-600 block text-sm">
+            {restaurantAddress ? restaurantAddress : null}
+          </span>
+          <div className="py-4">
+            <span className="block flex-wrap  flex items-center justify-between">
+              <div className=" py-2 md:w-2/3 flex items-center text-gray-800">
+                <MessageCircle size={20} className="text-gray-600 pr-1" />
+                {comments}
+              </div>
+              <div className="py-2  md:w-1/3 flex items-center text-gray-800">
+                <Users size={20} className="text-gray-600 pr-1" />
+                {feedCount ? feedCount : "Not specified"}
+              </div>
+            </span>
+          </div>
+        </div>
+
+        <div className="w-full md:w-1/3 items-center flex justify-center">
+          {claimer && claimer.id ? (
+            claimer.id == auth.id ? (
+              <div className="text-center">
+                <span className="text-red-600">Claimed by you</span>{" "}
+                <button
+                  type="button"
+                  onClick={() => claimEvent(id, null)}
+                  className="rounded py-1 px-2   bg-white hover:bg-gray-100 focus:outline-none border my-2"
+                >
+                  Cancel claim
+                </button>
+              </div>
+            ) : (
+              "claimed"
+            )
+          ) : (
+            <button
+              type="button"
+              onClick={() => claimEvent(id, auth.id)}
+              className="rounded py-1 px-2   bg-white hover:bg-gray-100 focus:outline-none border my-2"
+            >
+              Claim Items
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -129,6 +222,8 @@ function Home({ auth }) {
                 id={item.id}
                 date={new Date(item.date)}
                 comments={item.comments}
+                feedCount={item.feedcount}
+                claimer={item.userclaimer}
               />
             );
           })}
@@ -153,6 +248,8 @@ function Home({ auth }) {
                 comments={item.comments}
                 restaurantName={item.restauranteventid.name}
                 restaurantAddress={item.restauranteventid.address}
+                feedCount={item.feedcount}
+                claimer={item.userclaimer}
               />
             );
           })}
@@ -178,7 +275,7 @@ function Home({ auth }) {
           >
             <div className="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
 
-            <div className="modal-container bg-white w-11/12 md:max-w-lg mx-auto rounded shadow-lg z-50 overflow-y-auto">
+            <div className="modal-container bg-white w-11/12 md:max-w-lg mx-auto rounded-lg shadow-lg z-40 overflow-y-auto">
               <div
                 onClick={() => setModalOpen(false)}
                 className="modal-close absolute top-0 right-0 cursor-pointer flex flex-col items-center mt-4 mr-4 text-white text-sm z-50"
@@ -197,15 +294,12 @@ function Home({ auth }) {
                 </span>
               </div>
 
-              <form
-                className="modal-content py-4 text-left px-6"
-                onSubmit={handleSubmit}
-              >
-                <div className="flex justify-between items-center pb-3">
-                  <p className="text-2xl font-semibold">Simple Modal</p>
+              <form className="modal-content text-left" onSubmit={handleSubmit}>
+                <div className="flex justify-between items-center pb-3 py-4 px-6">
+                  <p className="text-xl font-semibold">Add New Event</p>
                   <div
                     onClick={() => setModalOpen(false)}
-                    className="modal-close cursor-pointer z-50"
+                    className="bg-gray-100 hover:bg-gray-200 cursor-pointer flex h-8 items-center justify-center modal-close rounded-full w-8 z-50"
                   >
                     <svg
                       className="fill-current text-black"
@@ -219,16 +313,17 @@ function Home({ auth }) {
                   </div>
                 </div>
 
-                <div>
+                <div className="bg-gray-100 py-4 px-6">
                   <div className="mb-4">
                     <label
                       htmlFor="comments"
                       className="block text-gray-900 leading-tight"
                     >
-                      Comments
+                      Food Description
                     </label>
 
                     <textarea
+                      required
                       className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none focus:border-green-400"
                       id="comments"
                       rows="4"
@@ -238,9 +333,32 @@ function Home({ auth }) {
                       onChange={e => setComments(e.target.value)}
                     />
                   </div>
+                  <div className="mb-4">
+                    <label
+                      htmlFor="feedcount"
+                      className="block text-gray-900 leading-tight"
+                    >
+                      How many can this feed?
+                    </label>
+                    <input
+                      required
+                      className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none focus:border-green-400"
+                      type="number"
+                      id="feedcount"
+                      name="feedcount"
+                      value={feedCount}
+                      onChange={e => setFeedCount(e.target.value)}
+                    />
+                  </div>
+                  <div className="flex justify-end my-4">
+                    <button
+                      type="submit"
+                      className="w-full bg-green-500 hover:bg-green-600 py-3 px-6 rounded-lg font-semibold text-white"
+                    >
+                      Submit
+                    </button>
+                  </div>
                 </div>
-
-                <button type="submit">Submit</button>
               </form>
             </div>
           </div>
@@ -251,11 +369,54 @@ function Home({ auth }) {
                 {auth.type === 1 ? <RestaurantIntro /> : <DistributorIntro />}
               </div>
 
-              {auth.type === 1 ? (
-                <MyRestaurantEvents events={data.events} />
-              ) : (
-                <DistributorEvents events={data.allEvents} />
-              )}
+              <div className="flex flex-wrap">
+                {auth.type !== 1 ? (
+                  <div className="w-full md:w-1/3  order-1 md:order-2 bg-gray-800 p-8">
+                    {data.myClaimed && data.myClaimed.length > 0 ? (
+                      <>
+                        {data.myClaimed.map((item, i) => (
+                          <div
+                            key={i}
+                            className="bg-gray-900 rounded-lg my-2 p-4 text-gray-200"
+                          >
+                            <span className="block font-semibold">
+                              {item.restauranteventid.name}
+                            </span>
+                            <span className="block text-gray-500 text-sm">
+                              {item.restauranteventid.address}
+                            </span>
+                          </div>
+                        ))}{" "}
+                        <button
+                          type="button"
+                          className="w-full bg-gray-100 rounded-lg my-2 p-4 text-gray-900"
+                        >
+                          Start Route
+                        </button>
+                      </>
+                    ) : (
+                      <span className="text-lg text-gray-200 p-4 block text-center">
+                        <span className="text-center mx-auto block">
+                          <Frown size={40} className="mx-auto m-4" />
+                        </span>
+                        No items claimed today.
+                      </span>
+                    )}
+                  </div>
+                ) : null}
+
+                <div
+                  className={`w-full ${
+                    auth.type !== 1 ? "md:w-2/3 order-2 md:order-1" : null
+                  }`}
+                >
+                  {auth.type === 1 ? (
+                    <MyRestaurantEvents events={data.events} />
+                  ) : (
+                    <DistributorEvents events={data.allEvents} />
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </>
