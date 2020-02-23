@@ -4,11 +4,31 @@
     {
       "type": "Feature",
       "properties": {
-        "location": "Sacramento"
+        "location": "Chipotle"
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [-121.4944, 38.5816]
+        "coordinates": [-121.34709, 38.66015]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "location": "PizzaHut"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-121.38414, 38.65655]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "location": "Ihop"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-121.35143, 38.66134]
       }
     }
   ]

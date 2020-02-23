@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import ReactMapGL, { Marker, Popup } from "react-map-gl";
+import ReactMapGL, {
+  Marker,
+  Popup,
+  GeolocateControl,
+  NavigationControl
+} from "react-map-gl";
 import data_json from "../markers.json";
 import { IoMdPin } from "react-icons/io";
 
@@ -8,11 +13,11 @@ const MAP_TOKEN =
 
 function Map() {
   const [viewPort, setDefaultPort] = useState({
-    width: "60vw",
-    height: "60vh",
-    latitude: 37.7577,
-    longitude: -122.4376,
-    zoom: 5
+    width: "100vw",
+    height: "100vh",
+    latitude: 38.66015,
+    longitude: -121.34709,
+    zoom: 13
   });
 
   const [select, setPopup] = useState(false);
@@ -35,12 +40,12 @@ function Map() {
           >
             <div>
               <button onClick={() => setPopup(true)}>
-                <h1 className="text-2xl text-blue-500">
+                <h1 className="text-2xl text-blue-600 text-xl font-bold">
                   {location.properties.location}
                 </h1>
-                <IoMdPin className="fill-current text-blue-500 w-24" />
+                <IoMdPin className="fill-current text-orange-600 " size={40} />
               </button>
-              {select ? (
+              {/* {select ? (
                 <Popup
                   latitude={location.geometry.coordinates[1]}
                   longitude={location.geometry.coordinates[0]}
@@ -54,10 +59,13 @@ function Map() {
                     {location.properties.location}
                   </div>
                 </Popup>
-              ) : null}
+              ) : null} */}
             </div>
           </Marker>
         ))}
+        <div style={{ position: "absolute", left: 0 }} className="m-16">
+          <NavigationControl />
+        </div>
       </ReactMapGL>
     </div>
   );
