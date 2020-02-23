@@ -4,11 +4,14 @@
 
 @tailwind utilities;
 
-.cls-1,.cls-2{fill:#30b34e;}.cls-2{opacity:0.4;isolation:isolate;}
+ .cls-2{opacity:0.4;isolation:isolate;}
 .modal {
     transition: opacity 0.25s ease;
   }
   body.modal-active {
     overflow-x: hidden;
     overflow-y: visible !important;
+  }
+  html {
+    font-family: 'Proxima Nova', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   }

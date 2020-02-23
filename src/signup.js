@@ -67,6 +67,7 @@ function Login() {
       if(accountType==1){
         createRestaraunt({ variables: { name:restaurantName, description: restaurantDescription, address: restaurantAddress } });
       } else {
+        navigate(`/`)
         window.location.reload(false);
       }
     
@@ -75,7 +76,7 @@ function Login() {
   });
 
   const [updateUserRestaurantInfo, { loadingSetLink }] = useMutation(UPDATE_USER_RESTAURANT, {
-    onCompleted: (data) => { window.location.reload(false)}
+    onCompleted: (data) => {  navigate(`/`); window.location.reload(false)}
   });
 
 
