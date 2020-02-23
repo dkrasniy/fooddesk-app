@@ -113,7 +113,7 @@ function Home({ auth }) {
             <span className="uppercase text-gray-600 tracking-wider text-sm mb-1 block">
               My Restaurant
             </span>
-            {/* <span className="block font-semibold text-lg">
+            <span className="block font-semibold text-lg">
               {data.user[0].restaurant.name}
             </span>
             <span className="block text-green-700">
@@ -121,7 +121,7 @@ function Home({ auth }) {
             </span>
             <span className="block text-gray-700 text-sm">
               {data.user[0].restaurant.address}
-            </span> */}
+            </span>
           </div>
           <div className="w-1/2 flex items-center justify-end">
             <button

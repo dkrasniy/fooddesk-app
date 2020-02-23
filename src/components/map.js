@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ReactMapGL, { Marker } from "react-map-gl";
+import ReactMapGL, { Marker, Popup } from "react-map-gl";
 import data_json from "../markers.json";
 import { IoMdPin } from "react-icons/io";
 
@@ -14,6 +14,8 @@ function Map() {
     longitude: -122.4376,
     zoom: 5
   });
+
+  const [select, setPopup] = useState(false);
 
   return (
     <div>
@@ -32,10 +34,27 @@ function Map() {
             longitude={location.geometry.coordinates[0]}
           >
             <div>
-              <h1 className="text-2xl text-blue-500">
-                {location.properties.location}
-              </h1>
-              <IoMdPin className="fill-current text-blue-500" />
+              <button onClick={() => setPopup(true)}>
+                <h1 className="text-2xl text-blue-500">
+                  {location.properties.location}
+                </h1>
+                <IoMdPin className="fill-current text-blue-500 w-24" />
+              </button>
+              {select ? (
+                <Popup
+                  latitude={location.geometry.coordinates[1]}
+                  longitude={location.geometry.coordinates[0]}
+                  onClose={() => setPopup(false)}
+                  closeButton={true}
+                  closeOnClick={false}
+                  anchor="top"
+                  dynamicPosition={true}
+                >
+                  <div className="text-white">
+                    {location.properties.location}
+                  </div>
+                </Popup>
+              ) : null}
             </div>
           </Marker>
         ))}
