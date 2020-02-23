@@ -20,7 +20,7 @@ const CREATE_PERSONAL_INFO = gql`
 
 
 
-function Step2({auth}) {
+function Step3({auth}) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -88,85 +88,18 @@ function Step2({auth}) {
        >
          <div  className="w-full h-2 flex items-center">
             <span className="w-1/4 h-2 block mx-2 bg-orange-500"></span>
-            <span className="w-1/4 h-2 block mx-2 bg-white"></span>
+            <span className="w-1/4 h-2 block mx-2 bg-orange-500"></span>
             <span className="w-1/4 h-2 block mx-2 bg-white"></span>
             <span className="w-1/4 h-2 block mx-2 bg-white"></span>
          </div>
          <div className="py-4">
-         <h2 className="font-semibold text-3xl py-2 Henriette font-bold">We need to know a little bit about you, {auth.name}.</h2>
-         <h3 className="text-lg block text-gray-600 ">So we can better match you with the therapist based on your insurance.</h3>
+         <h2 className="font-semibold text-3xl py-2 Henriette font-bold">How do you feel, {auth.name}?</h2>
+         <h3 className="text-lg block text-gray-600 ">Pick the categories that you are struggling with.
+We can alway discuss with the therapist later.</h3>
          </div>
-         <div className="my-4">
-            <label
-              htmlFor="name"
-              className="block text-gray-900 leading-tight"
-            >
-              Name
-            </label>
-            <input
-              className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none"
-              id="name"
-              type="text"
-              name="name"
-              value={auth.name}
-            readOnly
-            />
-          </div>
+         
        
-          <div className="mb-4">
-            <div className="flex flex-wrap">
-
-              <div className="w-full md:w-1/2 md:pr-2 py-2">
-              <label
-              htmlFor="phone"
-              className="block text-gray-900 leading-tight"
-            >
-              Phone{" "}
-            </label>
-            <input
-              className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none focus:border-orange-400"
-              type="tel"
-              id="phone"
-              name="phone"
-              value={phone}
-              onChange={e => setPhone(e.target.value)}
-            />
-              </div>
-              <div className="w-full md:w-1/2 md:pl-2 py-2">
-              <label
-              htmlFor="insurance"
-              className="block text-gray-900 leading-tight"
-            >
-              Insurance{" "}
-            </label>
-            <input
-              className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none focus:border-orange-400"
-              type="text"
-              id="insurance"
-              name="insurance"
-              value={insurance}
-              onChange={e => setInsurance(e.target.value)}
-            />
-              </div>
-            </div> </div>
-
-            <div className="my-4">
-            <label
-              htmlFor="school"
-              className="block text-gray-900 leading-tight"
-            >
-              School
-            </label>
-            <input
-              className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none focus:border-orange-400"
-              id="school"
-              type="text"
-              name="school"
-              value={school}
-              onChange={e => setSchool(e.target.value)}
-            />
-          </div>
-           
+         
 
          
           <button
@@ -182,7 +115,7 @@ function Step2({auth}) {
   );
 }
 
-export default Step2;
+export default Step3;
 
 
 
