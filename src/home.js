@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useQuery } from "@apollo/react-hooks";
-import { GET_RESTAURANT_DETAILS_FOR_USER } from "./queries/restaurant";
+import { GET_RESTAURANT_DETAILS_FOR_USER, CREATE_EVENT } from "./queries/restaurant";
 import Layout from "./components/layout";
+import { IoMdRestaurant } from "react-icons/io"; 
+import { useMutation } from '@apollo/react-hooks';
+
 
 function Home({ auth }) {
   const [myRestaurantData, setMyRestaurantData] = useState(null);
@@ -19,15 +22,29 @@ function Home({ auth }) {
     variables: { userId: auth.id }
   });
 
-  if (loading) return "Loading...";
+ 
   if (error) return `Error! ${error.message}`;
 
-  const handleSubmit = () =>{
-    console.log('submitting...')
-  }
+
+  const [createEvent, { loadingUser }] = useMutation(CREATE_EVENT, {
+    onCompleted: (data) => {
+      window.location.reload(false);
+    }
+      
+  });
+
+ 
+
+  const handleSubmit = (e) =>{
+    e.preventDefault();
+    createEvent({ variables: { comments: comments,   restaurant_id: data.user[0].restaurant.id, user_id: auth.id } });
+  } 
+
+
+
   return (
     <Layout auth={auth}>
-      <div
+      {loading ? 'Loading' : <><div
         className={`modal fixed w-full h-full top-0 left-0 flex items-center justify-center ${
           modalOpen ? "opacity-100" : "opacity-0 pointer-events-none "
         }`}
@@ -90,36 +107,47 @@ function Home({ auth }) {
         </div>
       </div>
 
-      <div className="p-12">
-        <h1 className="text-lg md:text-4xl font-semibold ">
-          Welcome, {auth.name}
-        </h1>
-        <div className="shadow rounded-lg bg-white p-4 flex">
-          <div className="w-1/2">
-            <span className="uppercase text-gray-600 tracking-wider text-sm mb-1 block">
+      <div className="p-6 md:p-0 md:py-6 -mt-40">
+        <div className="bg-white rounded-lg shadow-xl">
+
+        <div className="bg-white  border-green-500 p-6 rounded-t-lg">
+          <div className="text-center">
+            {/* <span className="uppercase text-green-600 tracking-widest font-semibold text-sm mb-1 block">
               My Restaurant
-            </span>
-            <span className="block font-semibold text-lg">
+            </span> */}
+            <div className="h-12 w-12 bg-gray-300 flex items-center justify-center rounded-full mx-auto"><IoMdRestaurant size={20}/></div>
+            <span className="block font-semibold text-lg md:text-2xl">
               {data.user[0].restaurant.name}
             </span>
-            <span className="block text-green-700">
-              {data.user[0].restaurant.description}
+            <span className="block text-gray-700">
+              {data.user[0].restaurant.description} - {data.user[0].restaurant.address}
             </span>
-            <span className="block text-gray-700 text-sm">
-              {data.user[0].restaurant.address}
-            </span>
-          </div>
-          <div className="w-1/2 flex items-center justify-end">
             <button
               type="button"
               onClick={() => setModalOpen(true)}
-              className="border px-4 py-2 rounded hover:bg-gray-100 focus:outline-none"
-            >
-              New Event
+              className="mt-8 border p-8 py-3 font-semibold rounded-lg  bg-green-600 hover:bg-green-500 text-white focus:outline-none    mx-auto"
+            >+ New Event
             </button>
           </div>
+        
         </div>
-      </div>
+
+              {data.events.length > 0 ?<div className="bg-gray-200  p-20 flex items-center justify-center text-center">{data.events.map((item,i)=>{
+                return (
+                  <div className="bg-white rounded-lg shadow p-4">{new Date(item.date).toLocaleTimeString('en-US')} {item.comments}</div>
+                )
+              })}</div> : <div className="bg-gray-200 text-gray-700 text-lg font-semibold p-20 flex items-center justify-center text-center">
+
+No recent events
+</div>}
+
+        </div>
+        {/* <h1 className="text-lg md:text-4xl font-semibold ">
+          Welcome, {auth.name}
+        </h1> */}
+       
+      </div></> }
+      
     </Layout>
   );
 }

@@ -3,12 +3,12 @@ import Logo from "./logo";
 import { LogOutUser } from "../auth";
 
 const Header = ({ auth }) => {
-  console.log(auth.type);
+ 
   return (
-    <div className="bg-white shadow-lg relative w-full p-4 ">
+    <div className="bg-green-600  w-full p-4 pb-40">
       <div className="flex justify-between items-center max-w-6xl mx-auto">
-        <div className="w-40 p-4">
-          <Logo />
+        <div className="w-40 ">
+          <Logo light={true}/>
         </div>
 
         <div>
