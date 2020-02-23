@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import logo from "./logo.svg";
 import { ChevronLeft } from "react-feather";
 import { Link, Router } from "@reach/router";
+import Layout from './components/layout'
 
 function About() {
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
 
   return (
+    <Layout>
     <div className="App bg-gray-800 text-center min-h-screen items-center flex justify-around">
       <div>
         <img src={logo} className="w-64 mx-auto" alt="logo" />
@@ -58,6 +60,7 @@ function About() {
         </Link>
       </div>
     </div>
+    </Layout>
   );
 }
 

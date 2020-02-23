@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import Logo from "./components/logo";
 import gql from "graphql-tag";
 import { useLazyQuery } from "@apollo/react-hooks";
+import { navigate } from "@reach/router"
+
 
 const GET_USER = gql`
   query User($email: String!, $password: String!) {
@@ -9,6 +11,7 @@ const GET_USER = gql`
       id
       email
       name
+      type
     }
   }
 `;
@@ -83,12 +86,20 @@ function Login() {
               onChange={e => setPassword(e.target.value)}
             />
           </div>
-
+          <div class="mt-4 px-2 text-right">
+         </div>
           <button
             type="submit"
             className="mt-6 block w-full px-4 py-3 leading-tight rounded-full bg-green-500 hover:bg-green-700 text-white font-semibold focus:outline-none"
           >
             {loading ? "Signing you in" : "Sign in"}
+          </button>
+          <button
+            type="button"
+            onClick={()=>navigate(`/sign-up`)}
+            className="mt-3 block w-full px-4 py-2 leading-tight rounded-full  text-gray-700 focus:outline-none"
+          >
+          Create an account
           </button>
         </form>
       </div>
