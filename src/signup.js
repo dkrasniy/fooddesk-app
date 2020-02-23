@@ -12,6 +12,9 @@ const CREATE_USER = gql`
     insert_user(objects: {name: $name, password: $password, email: $email, type: $type}) {
       returning {
         id
+        email
+        name
+        type
       }
     }
   }
@@ -30,7 +33,7 @@ const CREATE_RESTARAUNT = gql`
 
 const UPDATE_USER_RESTAURANT = gql`
   mutation updateUserRestaurantInfo($restaurantId: Int!, $userId: Int!) {
-    update_user(_set: {restaurant_id: restaurantId}, where: {id: {_eq: $userId}}) {
+    update_user(_set: {restaurant_id: $restaurantId}, where: {id: {_eq: $userId}}) {
       affected_rows
       returning {
         name
@@ -57,18 +60,27 @@ function Login() {
   const [accountType, setAccountType] = useState(4);
 
   const [createUser, { loadingUser }] = useMutation(CREATE_USER, {
-    onCompleted: (data) => {setCreatedUserID(data.insert_user.returning[0].id)}
-  });
-
-  const [updateUserRestaurantInfo, { loadingloading }] = useMutation(UPDATE_USER_RESTAURANT, {
-    onCompleted: (data) => {console.log('Created the user & restaurant',data)}
-  });
-
-
-  const [createRestaraunt, { loading, data }] = useMutation(CREATE_RESTARAUNT, {
     onCompleted: (data) => {
-      console.log('rest id', data.insert_restaurant.returning[0].id)
-      console.log('user id', createdUserID)
+      localStorage.setItem("authuser", JSON.stringify(data.insert_user.returning[0]));
+      setCreatedUserID(data.insert_user.returning[0].id)
+      
+      if(accountType==1){
+        createRestaraunt({ variables: { name:restaurantName, description: restaurantDescription, address: restaurantAddress } });
+      } else {
+        window.location.reload(false);
+      }
+    
+    }
+      
+  });
+
+  const [updateUserRestaurantInfo, { loadingSetLink }] = useMutation(UPDATE_USER_RESTAURANT, {
+    onCompleted: (data) => { window.location.reload(false)}
+  });
+
+
+  const [createRestaraunt, { loadingCreateRestaraunt, data }] = useMutation(CREATE_RESTARAUNT, {
+    onCompleted: (data) => {
       updateUserRestaurantInfo({ variables: { restaurantId: data.insert_restaurant.returning[0].id, userId: createdUserID } })
     }
   });
@@ -79,9 +91,7 @@ function Login() {
   const handleSubmit = e => {
     e.preventDefault();
     createUser({ variables: { name:name, email: email, password: password, type: accountType } });
-    if(accountType==1){
-      createRestaraunt({ variables: { name:restaurantName, description: restaurantDescription, address: restaurantAddress } });
-    }
+    
     
   };
 
@@ -103,11 +113,11 @@ function Login() {
           <span class="text-gray-700">Account Type</span>
           <div class="mt-2">
           <label htmlFor="type2" class="inline-flex items-center" >
-              <input id="type2" type="radio" class="form-radio" name="accountType" checked={accountType == 4} value="4" onChange={(e)=>setAccountType(e.target.value)}/>
+              <input required id="type2" type="radio" class="form-radio" name="accountType" checked={accountType == 4} value="4" onChange={(e)=>setAccountType(e.target.value)}/>
               <span class="ml-2">Distributor</span>
             </label>
             <label htmlFor="type1" class="inline-flex items-center ml-6">
-              <input id="type1" type="radio" class="form-radio" name="accountType" checked={accountType == 1} value="1" onChange={(e)=>setAccountType(e.target.value)}/>
+              <input required id="type1" type="radio" class="form-radio" name="accountType" checked={accountType == 1} value="1" onChange={(e)=>setAccountType(e.target.value)}/>
               <span class="ml-2">Restaurant</span>
             </label>
             
@@ -123,7 +133,7 @@ function Login() {
             >
               Name
             </label>
-            <input
+            <input required
               className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none focus:border-green-400"
               id="name"
               type="text"
@@ -139,7 +149,7 @@ function Login() {
             >
               Email
             </label>
-            <input
+            <input required
               className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none focus:border-green-400"
               id="email"
               type="text"
@@ -155,7 +165,7 @@ function Login() {
             >
               Password{" "}
             </label>
-            <input
+            <input required
               className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none focus:border-green-400"
               type="password"
               id="password"
@@ -177,7 +187,7 @@ function Login() {
             >
               Restaurant Name
             </label>
-            <input
+            <input required
               className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none focus:border-green-400"
               id="restaurantName"
               type="text"
@@ -193,7 +203,7 @@ function Login() {
             >
               Restaurant Description
             </label>
-            <input
+            <input required
               className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none focus:border-green-400"
               id="restaurantDescription"
               type="text"
@@ -209,7 +219,7 @@ function Login() {
             >
               Restaurant Address
             </label>
-            <input
+            <input required
               className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none focus:border-green-400"
               id="restaurantAddress"
               type="text"
@@ -226,7 +236,7 @@ function Login() {
             type="submit"
             className="mt-6 block w-full px-4 py-3 leading-tight rounded-full bg-green-500 hover:bg-green-700 text-white font-semibold focus:outline-none"
           >
-            {loading ? "Creating account..." : "Complete Signup"}
+            {loadingUser || loadingCreateRestaraunt || loadingSetLink ? "Creating account..." : "Complete Signup"}
           </button>
           <button
             type="button"
