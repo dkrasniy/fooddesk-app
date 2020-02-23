@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import Logo from "./logo";
 import { LogOutUser } from "../auth";
 
@@ -12,6 +12,7 @@ const Header = ({ auth }) => {
         </div>
 
         <div>
+
           <span className="text-gray-700 text-sm text-center">
             Logged in as {auth.name}
           </span>

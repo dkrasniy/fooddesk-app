@@ -7,6 +7,9 @@ import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 import Map from "./components/map";
 import SignUp from "./signup";
+import {Helmet} from "react-helmet";
+
+
 const client = new ApolloClient({
   uri: "https://fooddesk.herokuapp.com/v1/graphql"
 });
@@ -19,6 +22,11 @@ function Routes() {
   if (authenticated) {
     return (
       <ApolloProvider client={client}>
+        <Helmet>
+            <meta charSet="utf-8" />
+            <title>FoodDesk</title>
+            <link rel="canonical" href="http://fooddeskapp.com" />
+        </Helmet>
         <Router>
           <About path="/about" auth={authenticated} />
           <Home path="/" auth={authenticated} />

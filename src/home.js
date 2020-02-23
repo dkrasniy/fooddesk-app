@@ -387,12 +387,12 @@ function Home({ auth }) {
                             </span>
                           </div>
                         ))}{" "}
-                        <button
+                        <a href={`http://maps.apple.com/?q=${data.myClaimed[0].restauranteventid.address}`}
                           type="button"
-                          className="w-full bg-gray-100 rounded-lg my-2 p-4 text-gray-900"
+                          className="text-center block w-full bg-gray-100 rounded-lg my-2 p-4 text-gray-900"
                         >
                           Start Route
-                        </button>
+                        </a>
                       </>
                     ) : (
                       <span className="text-lg text-gray-200 p-4 block text-center">

@@ -3,7 +3,7 @@ import Logo from "./components/logo";
 import gql from "graphql-tag";
 import { useLazyQuery } from "@apollo/react-hooks";
 import { navigate } from "@reach/router"
-
+import {Helmet} from "react-helmet";
 
 const GET_USER = gql`
   query User($email: String!, $password: String!) {
@@ -44,6 +44,11 @@ function Login() {
 
   return (
     <div className="min-h-screen flex flex-col justify-center bg-gray-100 py-8">
+        <Helmet>
+            <meta charSet="utf-8" />
+            <title>FoodDesk</title>
+            <link rel="canonical" href="http://fooddeskapp.com" />
+        </Helmet>
       <div className="-mt-8 w-full max-w-md mx-auto px-6">
         <div className="w-64 mb-4 text-center mx-auto">
           <Logo />
