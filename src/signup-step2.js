@@ -46,7 +46,7 @@ const UPDATE_USER_RESTAURANT = gql`
 
 
 
-function Login() {
+function Step2({auth}) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -60,8 +60,10 @@ function Login() {
       localStorage.setItem("authuser", JSON.stringify(data.insert_user.returning[0]));
       setCreatedUserID(data.insert_user.returning[0].id)
       
-      navigate(`/sign-up-2`)
+      
+      navigate(`/`)
       window.location.reload(false);
+  
     
     }
       
@@ -112,7 +114,7 @@ function Login() {
          className="mt-8  sm:px-8 sm:py-8"
        >
          <div className="py-4">
-         <h2 className="font-semibold text-3xl py-2 Henriette font-bold">Create an account to start</h2>
+         <h2 className="font-semibold text-3xl py-2 Henriette font-bold">We need to know a little bit about you, {auth.name}.</h2>
          <h3 className="text-lg block text-gray-600 ">So we can better match you with the therapist based on your insurance.</h3>
          </div>
          <div className="my-4">
@@ -205,7 +207,7 @@ function Login() {
   );
 }
 
-export default Login;
+export default Step2;
 
 
 

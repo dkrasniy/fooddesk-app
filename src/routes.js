@@ -8,6 +8,7 @@ import { ApolloProvider } from "react-apollo";
 import Map from "./components/map";
 import SignUp from "./signup";
 import {Helmet} from "react-helmet";
+import Step2 from "./signup-step2";
 
 
 const client = new ApolloClient({
@@ -32,6 +33,7 @@ function Routes() {
           <Home path="/" auth={authenticated} />
           <Home default auth={authenticated} />
           <Map path="/map" auth={authenticated} />
+          <Step2 path="/sign-up-2" auth={authenticated}  />
         </Router>
       </ApolloProvider>
     );
@@ -41,6 +43,7 @@ function Routes() {
       <Router>
           <Login default />
           <SignUp path="/sign-up" />
+        
         </Router>
 
     </ApolloProvider>

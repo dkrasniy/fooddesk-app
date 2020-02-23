@@ -37,27 +37,49 @@ function Login() {
   };
 
   const WrongUserPass = () => (
-    <div className="bg-red-100 rounded text-red-600 font-semibold mb-4 p-4 py-2 my-2">
+    <div className="font-semibold mb-4 my-2 py-2 text-red-600">
       Username or password is incorrect
     </div>
   );
 
   return (
-    <div className="min-h-screen flex flex-col justify-center bg-gray-100 py-8">
+    <div className="min-h-screen  bg-orange-100">
+    <div className="bg-white">
+      <div className="container p-4 flex items-center justify-between mx-auto">
+
+    <div className="w-40">
+        <Logo />
+      </div>
+      <div>
+       <ul className="flex items-center justify-between">
+         <li className="uppercase text-orange-500 px-4">Home</li>
+         <li className="uppercase text-orange-500 px-4">About</li>
+         <li className="uppercase text-orange-500 px-4">Help</li>
+         <li className="uppercase text-orange-500 px-4 pr-0">
+           <button type="button" className="px-4 py-2 bg-orange-500 text-white rounded-lg">Log in</button></li>
+       
+       </ul>
+      </div>
+      </div>
+    </div>
         <Helmet>
             <meta charSet="utf-8" />
             <title>FoodDesk</title>
             <link rel="canonical" href="http://fooddeskapp.com" />
         </Helmet>
-      <div className="-mt-8 w-full max-w-md mx-auto px-6">
-        <div className="w-64 mb-4 text-center mx-auto">
-          <Logo />
-        </div>
+        <div className="w-full max-w-xl mx-auto p-6">
+        
         <form
           onSubmit={handleSubmit}
-          className="mt-8 sm:bg-white sm:rounded-lg sm:shadow-md sm:px-8 sm:py-8"
+          className="mt-8  sm:px-8 sm:py-8"
         >
-          <h2 className="font-semibold text-2xl mb-4">Sign In</h2>
+          <div className="py-4">
+          <h2 className="font-semibold text-3xl py-2 Henriette font-bold">Log in</h2>
+          <h3 className="text-lg block text-gray-600 ">Thank you for checking back to Skyduling. Let’s see what we matched for you. </h3>
+         
+          
+
+          </div>
           {invalidLogin ? <WrongUserPass /> : null}
           <div className="mb-4">
             <label
@@ -67,7 +89,7 @@ function Login() {
               Email
             </label>
             <input
-              className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none focus:border-green-400"
+              className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none focus:border-orange-400"
               id="email"
               type="text"
               name="email"
@@ -83,7 +105,7 @@ function Login() {
               Password{" "}
             </label>
             <input
-              className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none focus:border-green-400"
+              className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none focus:border-orange-400"
               type="password"
               id="password"
               name="password"
@@ -93,9 +115,12 @@ function Login() {
           </div>
           <div class="mt-4 px-2 text-right">
          </div>
+          <div className="text-right underline">
+          Forgot passwords?
+          </div>
           <button
             type="submit"
-            className="mt-6 block w-full px-4 py-3 leading-tight rounded-full bg-green-500 hover:bg-green-700 text-white font-semibold focus:outline-none"
+            className="mt-6 block w-full px-4 py-3 leading-tight rounded-lg bg-orange-500 hover:bg-orange-400 text-orange-100 font-semibold focus:outline-none"
           >
             {loading ? "Signing you in" : "Sign in"}
           </button>

@@ -1,4 +1,16 @@
 
+
+@font-face {
+    font-family: 'Henriette';
+    src: 
+        url('Henriette.eot?#iefix') format('embedded-opentype'),
+        url('Henriette.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+
 @font-face {
     font-family: 'Proxima Nova';
     src: 
