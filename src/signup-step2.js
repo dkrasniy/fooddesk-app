@@ -6,24 +6,9 @@ import { navigate } from "@reach/router"
 import { useMutation } from '@apollo/react-hooks';
 
 
-
-const CREATE_USER = gql`
-  mutation CreateUser($name: String!, $password: String!,$email: String!, $type: Int!) {
-    insert_user(objects: {name: $name, password: $password, email: $email, type: $type}) {
-      returning {
-        id
-        email
-        name
-        type
-      }
-    }
-  }
-`;
-
-
-const CREATE_RESTARAUNT = gql`
-  mutation CreateRestaraunt($name: String!, $description: String!,$address: String!) {
-    insert_restaurant(objects: {address: $address, description: $description, name: $name}) {
+const CREATE_PERSONAL_INFO = gql`
+  mutation CreatePersonalRecordUser($user_id: Int!, $school: String!,$phone: String!, $insurance: String!) {
+    insert_user_personal_info(objects: {user_id: $user_id, school: $school, phone: $phone, insurance: $insurance}) {
       returning {
         id
       }
@@ -31,17 +16,6 @@ const CREATE_RESTARAUNT = gql`
   }
 `;
 
-const UPDATE_USER_RESTAURANT = gql`
-  mutation updateUserRestaurantInfo($restaurantId: Int!, $userId: Int!) {
-    update_user(_set: {restaurant_id: $restaurantId}, where: {id: {_eq: $userId}}) {
-      affected_rows
-      returning {
-        name
-        restaurant_id
-      }
-    }
-  }
-`;
 
 
 
@@ -50,20 +24,22 @@ function Step2({auth}) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [phone, setPhone] = useState("");
+  const [insurance, setInsurance] = useState("");
+  const [school, setSchool] = useState("");
+
 
   const [createdUserID,setCreatedUserID] = useState(null);
 
   const [accountType, setAccountType] = useState(5);
 
-  const [createUser, { loadingUser }] = useMutation(CREATE_USER, {
+  const [createPersonalRecord, { loadingUser }] = useMutation(CREATE_PERSONAL_INFO, {
     onCompleted: (data) => {
-      localStorage.setItem("authuser", JSON.stringify(data.insert_user.returning[0]));
-      setCreatedUserID(data.insert_user.returning[0].id)
+      // localStorage.setItem("authuser", JSON.stringify(data.insert_user.returning[0]));
+      // setCreatedUserID(data.insert_user.returning[0].id)
       
-      
-      navigate(`/`)
-      window.location.reload(false);
-  
+      // navigate(`/step-3`)
+      // window.location.reload(false);
     
     }
       
@@ -74,8 +50,7 @@ function Step2({auth}) {
 
   const handleSubmit = e => {
     e.preventDefault();
-    createUser({ variables: { name:name, email: email, password: password, type: accountType } });
-    
+    createPersonalRecord({ variables: { user_id:auth.id, phone: phone, insurance: insurance, school: school } });
   };
 
 
@@ -113,6 +88,12 @@ function Step2({auth}) {
          onSubmit={handleSubmit}
          className="mt-8  sm:px-8 sm:py-8"
        >
+         <div  className="w-full h-2 flex items-center">
+            <span className="w-1/4 h-2 block mx-2 bg-orange-500"></span>
+            <span className="w-1/4 h-2 block mx-2 bg-white"></span>
+            <span className="w-1/4 h-2 block mx-2 bg-white"></span>
+            <span className="w-1/4 h-2 block mx-2 bg-white"></span>
+         </div>
          <div className="py-4">
          <h2 className="font-semibold text-3xl py-2 Henriette font-bold">We need to know a little bit about you, {auth.name}.</h2>
          <h3 className="text-lg block text-gray-600 ">So we can better match you with the therapist based on your insurance.</h3>
@@ -125,66 +106,68 @@ function Step2({auth}) {
               Name
             </label>
             <input
-              className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none focus:border-orange-400"
+              className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none"
               id="name"
               type="text"
               name="name"
-              value={name}
-              onChange={e => setName(e.target.value)}
+              value={auth.name}
+            readOnly
             />
           </div>
-         <div className="my-4">
-            <label
-              htmlFor="email"
-              className="block text-gray-900 leading-tight"
-            >
-              Email
-            </label>
-            <input
-              className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none focus:border-orange-400"
-              id="email"
-              type="text"
-              name="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-            />
-          </div>
+       
           <div className="mb-4">
             <div className="flex flex-wrap">
 
               <div className="w-full md:w-1/2 md:pr-2 py-2">
               <label
-              htmlFor="password"
+              htmlFor="phone"
               className="block text-gray-900 leading-tight"
             >
-              Password{" "}
+              Phone{" "}
             </label>
             <input
               className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none focus:border-orange-400"
-              type="password"
-              id="password"
-              name="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
+              type="tel"
+              id="phone"
+              name="phone"
+              value={phone}
+              onChange={e => setPhone(e.target.value)}
             />
               </div>
               <div className="w-full md:w-1/2 md:pl-2 py-2">
               <label
-              htmlFor="password"
+              htmlFor="insurance"
               className="block text-gray-900 leading-tight"
             >
-              Confirm Password{" "}
+              Insurance{" "}
             </label>
             <input
               className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none focus:border-orange-400"
-              type="password"
-              id="password"
-              name="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
+              type="text"
+              id="insurance"
+              name="insurance"
+              value={insurance}
+              onChange={e => setInsurance(e.target.value)}
             />
               </div>
             </div> </div>
+
+            <div className="my-4">
+            <label
+              htmlFor="school"
+              className="block text-gray-900 leading-tight"
+            >
+              School
+            </label>
+            <input
+              className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none focus:border-orange-400"
+              id="school"
+              type="text"
+              name="school"
+              value={school}
+              onChange={e => setSchool(e.target.value)}
+            />
+          </div>
            
 
          
@@ -192,15 +175,9 @@ function Step2({auth}) {
             type="submit"
             className="mt-6 block w-full px-4 py-3 leading-tight rounded-lg bg-orange-500 hover:bg-orange-400 text-orange-100 font-semibold focus:outline-none"
           >
-            {loadingUser ? "Creating account..." : "Next"}
+            {loadingUser ? "Saving info..." : "Next"}
           </button>
-          <button
-            type="button"
-            onClick={()=>navigate(`/`)}
-            className="mt-3 block w-full px-4 py-2 leading-tight rounded-full  text-gray-700 focus:outline-none"
-          >
-         Have an acccount? Login
-          </button>
+       
         </form>
       </div>
     </div>
