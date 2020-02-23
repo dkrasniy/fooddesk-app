@@ -6,6 +6,7 @@ import { Link, Router } from "@reach/router";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 import Map from "./components/map";
+import SignUp from "./signup";
 const client = new ApolloClient({
   uri: "https://fooddesk.herokuapp.com/v1/graphql"
 });
@@ -29,7 +30,11 @@ function Routes() {
   }
   return (
     <ApolloProvider client={client}>
-      <Login />
+      <Router>
+          <Login default />
+          <SignUp path="/sign-up" />
+        </Router>
+
     </ApolloProvider>
   );
 }
