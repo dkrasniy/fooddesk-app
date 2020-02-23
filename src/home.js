@@ -117,10 +117,10 @@ function Home({ auth }) {
             </span> */}
             <div className="h-12 w-12 bg-gray-300 flex items-center justify-center rounded-full mx-auto"><IoMdRestaurant size={20}/></div>
             <span className="block font-semibold text-lg md:text-2xl">
-              {data.user[0].restaurant.name}
+              {data.user[0] && data.user[0].restaurant && data.user[0].restaurant.name}
             </span>
             <span className="block text-gray-700">
-              {data.user[0].restaurant.description} - {data.user[0].restaurant.address}
+              {data.user[0] && data.user[0].restaurant && data.user[0].restaurant.description} - {data.user[0] && data.user[0].restaurant && data.user[0].restaurant.address}
             </span>
             <button
               type="button"
