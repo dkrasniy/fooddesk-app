@@ -1,5 +1,19 @@
 import gql from 'graphql-tag';
 
+export const GET_EVENTS_SUB = gql`
+subscription GET_EVENTS_SUB($userId: Int!) { 
+  events(where: { user_id: {_eq: $userId}}, order_by: {date: desc}) {
+    restaurant_id
+    id
+    date
+    feedcount
+    comments
+    userclaimer {
+      id
+    }
+  }
+  }
+    `
 export const GET_RESTAURANT_DETAILS_FOR_USER = gql`
     query GET_RESTAURANT_DETAILS_FOR_USER($userId: Int!) { 
         user(where: {id: {_eq: $userId}}) {
@@ -20,6 +34,7 @@ export const GET_RESTAURANT_DETAILS_FOR_USER = gql`
           comments
           userclaimer {
             id
+            name
           }
         }
         allEvents: events(order_by: {date: desc}) {

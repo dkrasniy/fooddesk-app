@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery, useSubscription } from "@apollo/react-hooks";
 import {
   GET_RESTAURANT_DETAILS_FOR_USER,
+  GET_EVENTS_SUB,
   CREATE_EVENT,
   UPDATE_EVENT
 } from "./queries/restaurant";
@@ -29,9 +30,19 @@ function Home({ auth }) {
     }
   });
 
+  // const { loading, error, data } = useSubscription(GET_EVENTS_SUB, {
+  //   variables: { userId: auth.id }
+  // });
+
   const { loading, error, data } = useQuery(GET_RESTAURANT_DETAILS_FOR_USER, {
     variables: { userId: auth.id }
   });
+
+  // const { subscribeToEvents, ...result } = useQuery(
+  //   GET_EVENTS_SUB,
+  //  {  variables: { userId: auth.id }}
+  // );
+  
 
   const [updateEventClaimer, { loadingUpdateClaimer }] = useMutation(
     UPDATE_EVENT,
@@ -91,9 +102,9 @@ function Home({ auth }) {
 
   </div>
 
-  <div className="w-full md:w-1/3 items-center flex justify-center">
+  <div className="border-t flex items-center justify-left md:w-1/3 my-4 py-4 w-full md:border-0 md:justify-center">
     {claimer && claimer.id ?  (
-        <div className="text-red-600 items-center flex"><div className="bg-red-600 rounded-full text-white p-2 h-8 w-8 flex items-center justify-center"><Lock/></div><span className="font-semibold ml-2">Claimed</span></div>
+        <div className="text-red-600 items-center flex"><div className="bg-red-600 rounded-full text-white p-2 h-8 w-8 flex items-center justify-center"><Lock/></div><span className="font-semibold ml-2 leading-tight">Claimed<span className="block font-normal">by {claimer.name}</span></span></div>
       )
     : (
       <div className="text-green-600 items-center flex"><div className="bg-green-500 rounded-full text-white p-2 h-8 w-8 flex items-center justify-center"><Check/></div><span className="font-semibold ml-2">Available</span></div>
