@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useQuery, useSubscription } from "@apollo/react-hooks";
+import gql from "graphql-tag";
 import {
   GET_RESTAURANT_DETAILS_FOR_USER,
   GET_EVENTS_SUB,
@@ -12,6 +13,19 @@ import { useMutation } from "@apollo/react-hooks";
 import { Users, Frown, MessageCircle, Clock, Check, Lock } from "react-feather";
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
+
+
+const PERSONAL_INFO = gql`
+  query GetPersonalInfo($userId: Int!) {
+    user_personal_info(where: {user_id: {_eq: $userId}}) {
+      id
+      insurance
+      phone
+      school
+    }
+  }
+`;
+
 
 
 TimeAgo.addLocale(en)
@@ -43,9 +57,10 @@ function Home({ auth }) {
   //   variables: { userId: auth.id }
   // });
 
-  const { loading, error, data } = useQuery(GET_RESTAURANT_DETAILS_FOR_USER, {
+  const { loading, error, data } = useQuery(PERSONAL_INFO, {
     variables: { userId: auth.id }
   });
+
 
   // const { subscribeToEvents, ...result } = useQuery(
   //   GET_EVENTS_SUB,
@@ -129,170 +144,6 @@ function Home({ auth }) {
     </div>
   );
 
-  const EventDistributor = ({
-    id,
-    date,
-    comments,
-    restaurantName = null,
-    restaurantAddress = null,
-    feedCount = null,
-    claimer
-  }) => (
-    <div
-      className={`bg-white p-4 rounded-lg  my-2 text-left w-full flex border-l-2 ${
-        claimer && claimer.id ? "border-red-500" : "border-green-600"
-      }`}
-    >
-    
-
-      <div className="pl-4 w-full flex flex-wrap">
-        <div className="w-full md:w-2/3">
-          {/* <div className=" py-2 flex items-center text-gray-800">
-            <Clock size={20} className="text-gray-600 pr-1" />
-            {date.toLocaleTimeString("en-US")}
-          </div> */}
-            <span className="text-xl font-semibold text-gray-400 block block w-full">{timeAgo.format(date,'short')}</span>
-
-          <span className="text-lg font-semibold">{restaurantName}</span>
-          <span className="text-gray-600 block text-sm">
-            {restaurantAddress ? restaurantAddress : null}
-          </span>
-          <div className="py-2">
-            <span className="block flex-wrap  flex items-center justify-between">
-              <div className=" py-1 w-full flex items-center text-gray-800">
-                <MessageCircle size={20} className="text-gray-600 pr-1" />
-                {comments}
-              </div>
-              <div className=" py-1 w-full flex items-center text-gray-800">
-                <Users size={20} className="text-gray-600 pr-1" />
-                {feedCount ? feedCount : "Not specified"}
-              </div>
-              
-            </span>
-          </div>
-        </div>
-
-        <div className="w-full md:w-1/3 items-center flex justify-center">
-          {claimer && claimer.id ? (
-            claimer.id == auth.id ? (
-              <div className="text-center">
-                 <div className="text-red-600 items-center flex"><div className="bg-red-600 rounded-full text-white p-1 h-5 w-5 flex items-center justify-center"><Check/></div><span className="font-semibold ml-2">Claimed</span></div>
-               
-                <button
-                  type="button"
-                  onClick={() => claimEvent(id, null)}
-                  className="rounded py-1 px-2   bg-white hover:bg-gray-100 focus:outline-none  my-2"
-                >
-                  Cancel claim
-                </button>
-              </div>
-            ) : (
-              "claimed"
-            )
-          ) : (
-            <button
-              type="button"
-              onClick={() => claimEvent(id, auth.id)}
-              className="rounded py-1 px-2   bg-white hover:bg-gray-100 focus:outline-none border my-2"
-            >
-              Claim
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-
-  const RestaurantIntro = () => (
-    <div className="flex items-center">
-      <div>
-      <div className="h-12 w-12 bg-gray-300 flex items-center justify-center rounded-full mx-auto">
-        <IoMdRestaurant size={20} />
-      </div>
-      </div>
-      <span className="block font-semibold text-lg md:text-2xl">
-        {data.user[0].restaurant.name}
-      </span>
-      <span className="block text-gray-700">
-        {data.user[0].restaurant.description} -{" "}
-        {data.user[0].restaurant.address}
-      </span>
-      <button
-        type="button"
-        onClick={() => setModalOpen(true)}
-        className="mt-8 border p-8 py-3 font-semibold rounded-lg  bg-green-600 hover:bg-green-500 text-white focus:outline-none    mx-auto"
-      >
-        + New Event
-      </button>
-    </div>
-  );
-
-  const DistributorIntro = () => (
-    <div className="flex items-center">
-      <div>
-
-      <div className="h-12 w-12 bg-gray-300 flex items-center justify-center rounded-full mx-auto">
-        <IoIosCar size={20} />
-      </div>
-      </div>
-      <div className="pl-4">
-      <span className="block font-semibold text-lg md:text-2xl">
-        {auth.name}
-      </span>
-      <span className="block text-gray-700">Distributor</span>
-      </div>
-    </div>
-  );
-
-  const MyRestaurantEvents = ({ events }) => (
-    <div className="text-center">
-      {events.length > 0 ? (
-        <div className="bg-gray-200  p-8">
-          {events.map((item, i) => {
-            return (
-              <Event
-                id={item.id}
-                date={new Date(item.date)}
-                comments={item.comments}
-                feedCount={item.feedcount}
-                claimer={item.userclaimer}
-              />
-            );
-          })}
-        </div>
-      ) : (
-        <div className="bg-gray-200 text-gray-700 text-lg font-semibold p-20 flex items-center justify-center text-center">
-          No recent events
-        </div>
-      )}
-    </div>
-  );
-
-  const DistributorEvents = ({ events }) => (
-    <div className="text-center">
-      {events.length > 0 ? (
-        <div className="bg-gray-200  p-8">
-          {events.map((item, i) => {
-            return (
-              <EventDistributor
-                id={item.id}
-                date={new Date(item.date)}
-                comments={item.comments}
-                restaurantName={item.restauranteventid.name}
-                restaurantAddress={item.restauranteventid.address}
-                feedCount={item.feedcount}
-                claimer={item.userclaimer}
-              />
-            );
-          })}
-        </div>
-      ) : (
-        <div className="bg-gray-200 text-gray-700 text-lg font-semibold p-20 flex items-center justify-center text-center">
-          No recent events
-        </div>
-      )}
-    </div>
-  );
 
   return (
     <Layout auth={auth}>
@@ -429,7 +280,7 @@ function Home({ auth }) {
                     ) : (
                       <span className="text-lg text-gray-700 p-4 block text-center">
                          
-                       You have no upcoming events. 
+                         {loading?'Loading': <><div>Phone: {data && data.user_personal_info && data.user_personal_info[0].phone}</div><div>Insurance: {data && data.user_personal_info && data.user_personal_info[0].insurance}</div><div>School: {data && data.user_personal_info && data.user_personal_info[0].school}</div></>}
                       </span>
                     )}
                   </div>

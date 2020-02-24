@@ -4,7 +4,7 @@ import gql from "graphql-tag";
 import { useLazyQuery } from "@apollo/react-hooks";
 import { navigate } from "@reach/router"
 import { useMutation } from '@apollo/react-hooks';
-
+import { useHistory } from "react-router-dom";
 
 const CREATE_PERSONAL_INFO = gql`
   mutation CreatePersonalRecordUser($user_id: Int!, $school: String!,$phone: String!, $insurance: String!) {
@@ -21,6 +21,8 @@ const CREATE_PERSONAL_INFO = gql`
 
 
 function Step2({auth}) {
+  auth = JSON.parse(localStorage.getItem("authuser"))
+  let history = useHistory();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -36,9 +38,8 @@ function Step2({auth}) {
   const [createPersonalRecord, { loadingUser }] = useMutation(CREATE_PERSONAL_INFO, {
     onCompleted: (data) => {
      
-      navigate(`/`)
+      history.push('/')
       window.location.reload(false);
-    
     }
       
   });
@@ -124,6 +125,7 @@ function Step2({auth}) {
               Phone{" "}
             </label>
             <input
+            required
               className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none focus:border-orange-400"
               type="tel"
               id="phone"
@@ -140,6 +142,7 @@ function Step2({auth}) {
               Insurance{" "}
             </label>
             <input
+            required
               className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none focus:border-orange-400"
               type="text"
               id="insurance"
@@ -158,6 +161,7 @@ function Step2({auth}) {
               School
             </label>
             <input
+            required
               className="mt-2 block w-full border-2 border-gray-300 rounded-lg bg-white px-3 py-2 leading-tight focus:outline-none focus:border-orange-400"
               id="school"
               type="text"

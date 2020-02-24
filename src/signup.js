@@ -4,7 +4,16 @@ import gql from "graphql-tag";
 import { useLazyQuery } from "@apollo/react-hooks";
 import { navigate } from "@reach/router"
 import { useMutation } from '@apollo/react-hooks';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useRouteMatch,
+  useParams
+} from "react-router-dom";
 
+import { useHistory } from "react-router-dom";
 
 
 const CREATE_USER = gql`
@@ -47,6 +56,8 @@ const UPDATE_USER_RESTAURANT = gql`
 
 
 function Login() {
+  let history = useHistory();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -58,11 +69,8 @@ function Login() {
   const [createUser, { loadingUser }] = useMutation(CREATE_USER, {
     onCompleted: (data) => {
       localStorage.setItem("authuser", JSON.stringify(data.insert_user.returning[0]));
-      setCreatedUserID(data.insert_user.returning[0].id)
-      
-      navigate(`/sign-up-2`)
-      window.location.reload(false);
-    
+      history.push('/sign-up-2')
+
     }
       
   });
@@ -192,13 +200,14 @@ function Login() {
           >
             {loadingUser ? "Creating account..." : "Next"}
           </button>
-          <button
+          <Link
             type="button"
-            onClick={()=>navigate(`/`)}
-            className="mt-3 block w-full px-4 py-2 leading-tight rounded-full  text-gray-700 focus:outline-none"
+            to="/"
+            
+            className="mt-3  text-center block w-full px-4 py-2 leading-tight rounded-full  text-gray-700 focus:outline-none"
           >
          Have an acccount? Login
-          </button>
+          </Link>
         </form>
       </div>
     </div>

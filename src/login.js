@@ -4,6 +4,14 @@ import gql from "graphql-tag";
 import { useLazyQuery } from "@apollo/react-hooks";
 import { navigate } from "@reach/router"
 import {Helmet} from "react-helmet";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useRouteMatch,
+  useParams
+} from "react-router-dom";
 
 const GET_USER = gql`
   query User($email: String!, $password: String!) {
@@ -124,13 +132,14 @@ function Login() {
           >
             {loading ? "Signing you in" : "Sign in"}
           </button>
-          <button
+          <Link
             type="button"
-            onClick={()=>navigate(`/sign-up`)}
-            className="mt-3 block w-full px-4 py-2 leading-tight rounded-full  text-gray-700 focus:outline-none"
+            to="/sign-up"
+            
+            className="mt-3  text-center block w-full px-4 py-2 leading-tight rounded-full  text-gray-700 focus:outline-none"
           >
           Create an account
-          </button>
+          </Link>
         </form>
       </div>
     </div>
