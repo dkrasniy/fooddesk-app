@@ -26,7 +26,7 @@ function Routes() {
       <ApolloProvider client={client}>
         <Helmet>
             <meta charSet="utf-8" />
-            <title>FoodDesk</title>
+            <title>Skyduling</title>
             <link rel="canonical" href="http://fooddeskapp.com" />
         </Helmet>
         <Router>

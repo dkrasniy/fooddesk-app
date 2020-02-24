@@ -64,7 +64,7 @@ function Login() {
     </div>
         <Helmet>
             <meta charSet="utf-8" />
-            <title>FoodDesk</title>
+            <title>Skyduling</title>
             <link rel="canonical" href="http://fooddeskapp.com" />
         </Helmet>
         <div className="w-full max-w-xl mx-auto p-6">
