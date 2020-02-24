@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery, useSubscription } from "@apollo/react-hooks";
 import {
   GET_RESTAURANT_DETAILS_FOR_USER,
+  GET_EVENTS_SUB,
   CREATE_EVENT,
   UPDATE_EVENT
 } from "./queries/restaurant";
@@ -9,8 +10,17 @@ import Layout from "./components/layout";
 import { IoMdRestaurant, IoIosCar } from "react-icons/io";
 import { useMutation } from "@apollo/react-hooks";
 import { Users, Frown, MessageCircle, Clock, Check, Lock } from "react-feather";
+import TimeAgo from 'javascript-time-ago'
+import en from 'javascript-time-ago/locale/en'
+
+
+TimeAgo.addLocale(en)
+const timeAgo = new TimeAgo('en-US')
+
 
 function Home({ auth }) {
+
+  
   const [myRestaurantData, setMyRestaurantData] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [feedCount, setFeedCount] = useState("");
@@ -29,9 +39,19 @@ function Home({ auth }) {
     }
   });
 
+  // const { loading, error, data } = useSubscription(GET_EVENTS_SUB, {
+  //   variables: { userId: auth.id }
+  // });
+
   const { loading, error, data } = useQuery(GET_RESTAURANT_DETAILS_FOR_USER, {
     variables: { userId: auth.id }
   });
+
+  // const { subscribeToEvents, ...result } = useQuery(
+  //   GET_EVENTS_SUB,
+  //  {  variables: { userId: auth.id }}
+  // );
+  
 
   const [updateEventClaimer, { loadingUpdateClaimer }] = useMutation(
     UPDATE_EVENT,
@@ -82,6 +102,8 @@ function Home({ auth }) {
       <Clock size={20} className="text-gray-600 pr-1" />
       {date.toLocaleTimeString("en-US")}
     </div>
+    {timeAgo.format(date,'short')}
+
 
     <span className="text-lg font-semibold">{comments}</span>
     <span className="text-gray-600 block flex items-center">
@@ -91,9 +113,9 @@ function Home({ auth }) {
 
   </div>
 
-  <div className="w-full md:w-1/3 items-center flex justify-center">
+  <div className="border-t flex items-center justify-left md:w-1/3 my-4 py-4 w-full md:border-0 md:justify-center">
     {claimer && claimer.id ?  (
-        <div className="text-red-600 items-center flex"><div className="bg-red-600 rounded-full text-white p-2 h-8 w-8 flex items-center justify-center"><Lock/></div><span className="font-semibold ml-2">Claimed</span></div>
+        <div className="text-red-600 items-center flex"><div className="bg-red-600 rounded-full text-white p-2 h-8 w-8 flex items-center justify-center"><Lock/></div><span className="font-semibold ml-2 leading-tight">Claimed<span className="block font-normal">by {claimer.name}</span></span></div>
       )
     : (
       <div className="text-green-600 items-center flex"><div className="bg-green-500 rounded-full text-white p-2 h-8 w-8 flex items-center justify-center"><Check/></div><span className="font-semibold ml-2">Available</span></div>
@@ -121,29 +143,31 @@ function Home({ auth }) {
         claimer && claimer.id ? "border-red-500" : "border-green-600"
       }`}
     >
-      <span className="text-4xl font-semibold text-gray-300 block">{id}</span>
+    
 
       <div className="pl-4 w-full flex flex-wrap">
         <div className="w-full md:w-2/3">
-          <div className=" py-2 flex items-center text-gray-800">
+          {/* <div className=" py-2 flex items-center text-gray-800">
             <Clock size={20} className="text-gray-600 pr-1" />
             {date.toLocaleTimeString("en-US")}
-          </div>
+          </div> */}
+            <span className="text-xl font-semibold text-gray-400 block block w-full">{timeAgo.format(date,'short')}</span>
 
           <span className="text-lg font-semibold">{restaurantName}</span>
           <span className="text-gray-600 block text-sm">
             {restaurantAddress ? restaurantAddress : null}
           </span>
-          <div className="py-4">
+          <div className="py-2">
             <span className="block flex-wrap  flex items-center justify-between">
-              <div className=" py-2 md:w-2/3 flex items-center text-gray-800">
+              <div className=" py-1 w-full flex items-center text-gray-800">
                 <MessageCircle size={20} className="text-gray-600 pr-1" />
                 {comments}
               </div>
-              <div className="py-2  md:w-1/3 flex items-center text-gray-800">
+              <div className=" py-1 w-full flex items-center text-gray-800">
                 <Users size={20} className="text-gray-600 pr-1" />
                 {feedCount ? feedCount : "Not specified"}
               </div>
+              
             </span>
           </div>
         </div>
@@ -152,11 +176,12 @@ function Home({ auth }) {
           {claimer && claimer.id ? (
             claimer.id == auth.id ? (
               <div className="text-center">
-                <span className="text-red-600">Claimed by you</span>{" "}
+                 <div className="text-red-600 items-center flex"><div className="bg-red-600 rounded-full text-white p-1 h-5 w-5 flex items-center justify-center"><Check/></div><span className="font-semibold ml-2">Claimed</span></div>
+               
                 <button
                   type="button"
                   onClick={() => claimEvent(id, null)}
-                  className="rounded py-1 px-2   bg-white hover:bg-gray-100 focus:outline-none border my-2"
+                  className="rounded py-1 px-2   bg-white hover:bg-gray-100 focus:outline-none  my-2"
                 >
                   Cancel claim
                 </button>
@@ -170,7 +195,7 @@ function Home({ auth }) {
               onClick={() => claimEvent(id, auth.id)}
               className="rounded py-1 px-2   bg-white hover:bg-gray-100 focus:outline-none border my-2"
             >
-              Claim Items
+              Claim
             </button>
           )}
         </div>
@@ -179,9 +204,11 @@ function Home({ auth }) {
   );
 
   const RestaurantIntro = () => (
-    <div className="text-center">
+    <div className="flex items-center">
+      <div>
       <div className="h-12 w-12 bg-gray-300 flex items-center justify-center rounded-full mx-auto">
         <IoMdRestaurant size={20} />
+      </div>
       </div>
       <span className="block font-semibold text-lg md:text-2xl">
         {data.user[0].restaurant.name}
@@ -201,14 +228,19 @@ function Home({ auth }) {
   );
 
   const DistributorIntro = () => (
-    <div className="text-center">
+    <div className="flex items-center">
+      <div>
+
       <div className="h-12 w-12 bg-gray-300 flex items-center justify-center rounded-full mx-auto">
         <IoIosCar size={20} />
       </div>
+      </div>
+      <div className="pl-4">
       <span className="block font-semibold text-lg md:text-2xl">
         {auth.name}
       </span>
       <span className="block text-gray-700">Distributor</span>
+      </div>
     </div>
   );
 
@@ -365,31 +397,31 @@ function Home({ auth }) {
 
           <div className="p-6 md:p-0 md:py-6 -mt-40">
             <div className="bg-white rounded-lg shadow-xl">
-              <div className="bg-white  border-green-500 p-6 rounded-t-lg">
+              <div className="bg-white  border-green-500 p-8 rounded-t-lg">
                 {auth.type === 1 ? <RestaurantIntro /> : <DistributorIntro />}
               </div>
 
               <div className="flex flex-wrap">
                 {auth.type !== 1 ? (
-                  <div className="w-full md:w-1/3  order-1 md:order-2 bg-gray-800 p-8">
+                  <div className="w-full md:w-1/3  order-1 md:order-2 bg-gray-100 p-8">
                     {data.myClaimed && data.myClaimed.length > 0 ? (
                       <>
                         {data.myClaimed.map((item, i) => (
                           <div
                             key={i}
-                            className="bg-gray-900 rounded-lg my-2 p-4 text-gray-200"
+                            className="bg-gray-300 rounded-lg my-2 p-4 text-gray-900"
                           >
-                            <span className="block font-semibold">
+                            <span className="block font-semibold text-gray-800">
                               {item.restauranteventid.name}
                             </span>
-                            <span className="block text-gray-500 text-sm">
+                            <span className="block text-gray-700 text-sm">
                               {item.restauranteventid.address}
                             </span>
                           </div>
                         ))}{" "}
                         <a href={`http://maps.apple.com/?q=${data.myClaimed[0].restauranteventid.address}`}
                           type="button"
-                          className="text-center block w-full bg-gray-100 rounded-lg my-2 p-4 text-gray-900"
+                          className="text-center block w-full bg-gray-200 rounded-lg my-2 p-4 text-gray-900"
                         >
                           Start Route
                         </a>
