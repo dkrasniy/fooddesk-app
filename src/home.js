@@ -397,8 +397,8 @@ function Home({ auth }) {
 
           <div className="p-6 md:p-0 md:py-6 -mt-40">
             <div className="bg-white rounded-lg shadow-xl">
-              <div className="bg-white  border-green-500 p-8 rounded-t-lg">
-                {auth.type === 1 ? <RestaurantIntro /> : <DistributorIntro />}
+              <div className="bg-white Henriette font-bold text-lg border-green-500 p-8 rounded-t-lg">
+                 Welcome to Skyduling, {auth.name}
               </div>
 
               <div className="flex flex-wrap">
@@ -427,11 +427,9 @@ function Home({ auth }) {
                         </a>
                       </>
                     ) : (
-                      <span className="text-lg text-gray-200 p-4 block text-center">
-                        <span className="text-center mx-auto block">
-                          <Frown size={40} className="mx-auto m-4" />
-                        </span>
-                        No items claimed today.
+                      <span className="text-lg text-gray-700 p-4 block text-center">
+                         
+                       You have no upcoming events. 
                       </span>
                     )}
                   </div>
@@ -442,11 +440,7 @@ function Home({ auth }) {
                     auth.type !== 1 ? "md:w-2/3 order-2 md:order-1" : null
                   }`}
                 >
-                  {auth.type === 1 ? (
-                    <MyRestaurantEvents events={data.events} />
-                  ) : (
-                    <DistributorEvents events={data.allEvents} />
-                  )}
+                  
                 </div>
               </div>
             </div>

@@ -6,7 +6,7 @@ import { ChevronDown } from "react-feather";
 const Header = ({ auth }) => {
  const [dropDownOpen,setDropDownOpen] =  useState(false);
   return (
-    <div className="bg-green-600  w-full p-4 pb-40">
+    <div className="bg-orange-600  w-full p-4 pb-40">
       <div className="flex justify-between items-center max-w-6xl mx-auto">
         <div className="w-40 ">
           <Logo light={true}/>

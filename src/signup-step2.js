@@ -36,7 +36,7 @@ function Step2({auth}) {
   const [createPersonalRecord, { loadingUser }] = useMutation(CREATE_PERSONAL_INFO, {
     onCompleted: (data) => {
      
-      navigate(`/sign-up-3`)
+      navigate(`/`)
       window.location.reload(false);
     
     }
